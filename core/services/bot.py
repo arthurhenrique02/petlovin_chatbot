@@ -27,5 +27,5 @@ class OpenAIBot(GenericBot):
         chat = self.llm.bind(self.complete_prompt)
         return chat.invoke({"input_data": input_data})
 
-    def initialize_llm(self):
-        return OpenAI(model_name=self.model)
+    def initialize_llm(self) -> ChatOpenAI:
+        return ChatOpenAI(model_name=self.model)

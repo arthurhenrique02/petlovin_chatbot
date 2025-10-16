@@ -1,13 +1,11 @@
 import typing
 from abc import ABC, abstractmethod
 
-from langchain_core.language_models.llms import BaseLLM
-
 
 class GenericBot(ABC):
     name: str
     model: str
-    llm: BaseLLM
+    llm: typing.Any
     system_prompt: str
 
     def __init__(self, name: str, system_prompt: str, model: str):
@@ -24,5 +22,5 @@ class GenericBot(ABC):
         pass
 
     @abstractmethod
-    def initialize_llm(self) -> BaseLLM:
+    def initialize_llm(self) -> typing.Any:
         pass
