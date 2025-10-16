@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse, Response
 
 from core.services.bot import OpenAIChatBot
 from models.chat import ChatRequest
@@ -34,5 +35,14 @@ bot = OpenAIChatBot(
 
 @router.post("/question-and-answer")
 async def question_and_answer(request: ChatRequest):
-    response = bot.task(request.question)
-    return {"response": response}
+    fmtd_question = request.question.strip().capitalize()
+
+    if not fmtd_question:
+        return Response(content="Deve-se enviar ao menos uma pergunta", status_code=400)
+
+    try:
+        response = bot.task(request.question)
+    except Exception as e:
+        return Response(content=str(e), status_code=500)
+
+    return JSONResponse(content={"response": response}, status_code=200)
