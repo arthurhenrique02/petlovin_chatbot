@@ -1,14 +1,15 @@
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 )
-from langchain_openai import OpenAI
+from langchain_openai import ChatOpenAI
 
 from core.services.generics import GenericBot
 
 
-class OpenAIBot(GenericBot):
+class OpenAIChatBot(GenericBot):
     complete_prompt: ChatPromptTemplate
 
     def __init__(self, name, system_prompt, model):
@@ -24,8 +25,9 @@ class OpenAIBot(GenericBot):
         """
         Process the input data using the LLM and return the response.
         """
-        chat = self.llm.bind(self.complete_prompt)
-        return chat.invoke({"input_data": input_data})
+        # str parser to just get the text response
+        chain = self.complete_prompt | self.llm | StrOutputParser()
+        return chain.invoke({"input_data": input_data})
 
     def initialize_llm(self) -> ChatOpenAI:
         return ChatOpenAI(model_name=self.model)
